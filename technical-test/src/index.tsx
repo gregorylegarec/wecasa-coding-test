@@ -3,14 +3,19 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 
 import store from "./redux/store";
+import WecasaClient from "./lib/wecasa/client";
+import WecasaProvider from "./lib/wecasa/WecasaProvider";
 
-import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 
+const client = new WecasaClient();
+
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <WecasaProvider client={client}>
+      <App />
+    </WecasaProvider>
   </Provider>,
   document.getElementById("root")
 );
