@@ -5,10 +5,11 @@ import { AnyAction } from "redux";
 import { ThunkAction } from "redux-thunk";
 
 import { AppState } from "../reducer";
-import { WecasaClient } from "../../lib/client";
+import { WecasaClient } from "../../lib/wecasa/client";
+import { Universe } from "../../lib/wecasa/types";
 
 export interface HaircutState {
-  universe: Object;
+  universe: Universe;
   fetching: boolean;
 }
 
@@ -23,7 +24,7 @@ export interface StartFetchinghHaircutUniverseAction {
 
 export interface ReceiveHaircutUniverseAction {
   type: typeof RECEIVE_HAIRCUT_UNIVERSE;
-  payload: Object;
+  payload: Universe;
 }
 
 export type HaircutActionTypes =
@@ -36,7 +37,7 @@ export const startFetchinghHaircutUniverse = (): StartFetchinghHaircutUniverseAc
 });
 
 export const receiveHaircutUniverse = (
-  universe: Object
+  universe: Universe
 ): ReceiveHaircutUniverseAction => ({
   type: RECEIVE_HAIRCUT_UNIVERSE,
   payload: universe
@@ -52,8 +53,15 @@ export const fetchHaircutUniverse = (
 };
 
 // Reducer
+const initialState = {
+  fetching: false,
+  universe: {
+    categories: []
+  }
+};
+
 export const haircutReducer = (
-  state: HaircutState = { fetching: false, universe: {} },
+  state: HaircutState = initialState,
   action: HaircutActionTypes
 ): HaircutState => {
   switch (action.type) {

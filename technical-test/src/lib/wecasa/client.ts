@@ -1,8 +1,4 @@
-export interface Booking {
-  prestations: Array<string>;
-  appointment?: Date;
-  address?: string;
-}
+import { Booking } from "./types";
 
 const url = "https://www.wecasa.fr/api/techtest";
 

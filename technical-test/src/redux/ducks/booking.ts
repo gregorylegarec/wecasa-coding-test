@@ -1,7 +1,7 @@
 /**
  * This duck provides actions and reducers to manage state of current booking.
  */
-import { Booking } from "../../lib/client";
+import { Booking } from "../../lib/wecasa/types";
 
 // State type
 // No enum for now, should be a nice improvement
