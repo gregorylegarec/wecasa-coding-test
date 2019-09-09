@@ -1,5 +1,6 @@
 import React from "react";
 
+import PrestationControl from "./PrestationControl";
 import { PrestationCategory } from "../../lib/wecasa/types";
 
 interface Props {
@@ -14,7 +15,10 @@ export const Category = React.memo((props: Props) => {
       <h2>{title}</h2>
       <ul>
         {prestations.map(prestation => (
-          <li>{prestation.title}</li>
+          <PrestationControl
+            key={prestation.reference}
+            prestation={prestation}
+          />
         ))}
       </ul>
     </section>
