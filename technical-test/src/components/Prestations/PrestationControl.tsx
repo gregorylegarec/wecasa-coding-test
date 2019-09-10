@@ -2,6 +2,7 @@ import React from "react";
 import { AnyAction, Dispatch } from "redux";
 import { connect } from "react-redux";
 
+import { formatPrice } from "../../helpers/format";
 import { Prestation } from "../../lib/wecasa/types";
 import { getNumPrestations } from "../../redux/selectors";
 import { AppState } from "../../redux/reducer";
@@ -43,10 +44,11 @@ export class PrestationControl extends React.Component<Props> {
 
   render() {
     const { prestation, numPrestations = 0 } = this.props;
-    const { title } = prestation;
+    const { price, title } = prestation;
     return (
       <li>
-        {title} ({numPrestations}) <button onClick={this.handleAdd}>+</button>{" "}
+        {title} {formatPrice(price)} ({numPrestations}){" "}
+        <button onClick={this.handleAdd}>+</button>{" "}
         <button onClick={this.handleRemove}>-</button>
       </li>
     );
