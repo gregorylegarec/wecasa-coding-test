@@ -7,7 +7,16 @@ import Address from "./components/Address";
 import Appointment from "./components/Appointment";
 import Confirmation from "./components/Confirmation";
 
-import { updateBooking, resetBooking } from "./redux/ducks/booking";
+import { Booking } from "./lib/wecasa/types";
+import WecasaClient from "./lib/wecasa/client";
+import { withWecasaClient } from "./lib/wecasa/hoc/withWecasaClient";
+import { AppState } from "./redux/reducer";
+import { getBooking, isSavingBooking } from "./redux/selectors";
+import {
+  updateBooking,
+  resetBooking,
+  saveBooking
+} from "./redux/ducks/booking";
 
 const STEP_PRESTATIONS = "STEP_PRESTATIONS";
 const STEP_ADDRESS = "STEP_ADDRESS";
@@ -22,7 +31,11 @@ const STEPS = [
 ];
 
 interface Props {
+  booking: Booking;
+  isSaving: boolean;
+  client: WecasaClient;
   onBookingUpdate: (attributes: Object) => void;
+  onBookingReady: () => void;
   onBookingReset: () => void;
 }
 
@@ -58,6 +71,7 @@ export class App extends React.Component<Props, State> {
   handleSubmitAppointment(appointment: Date) {
     const { onBookingUpdate } = this.props;
     onBookingUpdate({ appointment });
+    this.saveBooking();
     this.nextStep();
   }
 
@@ -72,6 +86,11 @@ export class App extends React.Component<Props, State> {
     const shouldReset = stepIndex >= STEPS.length - 1;
     const nextIndex = shouldReset ? 0 : stepIndex + 1;
     this.setState({ stepIndex: nextIndex });
+  }
+
+  saveBooking() {
+    const { onBookingReady } = this.props;
+    onBookingReady();
   }
 
   renderCurrentPage() {
@@ -91,24 +110,36 @@ export class App extends React.Component<Props, State> {
   }
 
   render() {
+    const { isSaving } = this.props;
     return (
       <div className="App">
         <header>
           <h1>Votre commande</h1>
         </header>
-        {this.renderCurrentPage()}
+        {isSaving ? <p>Sauvegarde ...</p> : this.renderCurrentPage()}
       </div>
     );
   }
 }
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
+const mapStateToProps = (state: AppState) => ({
+  booking: getBooking(state),
+  isSaving: isSavingBooking(state)
+});
+
+const mapDispatchToProps = (
+  dispatch: Dispatch<AnyAction>,
+  ownProps: Props
+) => ({
   onBookingUpdate: (attributes: Object) =>
     dispatch<any>(updateBooking(attributes)),
+  onBookingReady: () => dispatch<any>(saveBooking(ownProps.client)),
   onBookingReset: () => dispatch<any>(resetBooking())
 });
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(App);
+export default withWecasaClient(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(App)
+);

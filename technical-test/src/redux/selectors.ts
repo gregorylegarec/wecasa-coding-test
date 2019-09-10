@@ -1,5 +1,15 @@
 import { AppState } from "./reducer";
-import { PrestationCategory, Prestation, Universe } from "../lib/wecasa/types";
+import {
+  Booking,
+  PrestationCategory,
+  Prestation,
+  Universe
+} from "../lib/wecasa/types";
+
+// Booking
+export const getBooking = (state: AppState): Booking => state.booking.data;
+export const isSavingBooking = (state: AppState): boolean =>
+  state.booking.saving;
 
 // Haircut
 export const getHaircutUniverse = (state: AppState): Universe =>

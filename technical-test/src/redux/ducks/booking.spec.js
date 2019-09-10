@@ -3,9 +3,12 @@ import { bookingReducer, updateBooking, resetBooking } from "./booking";
 describe("Booking duck", () => {
   describe("reducer", () => {
     const state = {
-      prestations: ["brushing"],
-      appointment: "2018-10-12T14:30:00+02:00",
-      address: "46 Rue René Clair, 75018 Paris"
+      data: {
+        prestations: ["brushing"],
+        appointment: "2018-10-12T14:30:00+02:00",
+        address: "46 Rue René Clair, 75018 Paris"
+      },
+      saving: false
     };
 
     it("should update booking", () => {
@@ -18,13 +21,15 @@ describe("Booking duck", () => {
         appointment: "2018-10-12T14:30:00+02:00",
         address: "46 Rue René Clair, 75018 Paris"
       };
-      expect(bookingReducer(state, updateBooking(booking))).toEqual(
-        expectedBooking
-      );
+
+      const nextState = bookingReducer(state, updateBooking(booking));
+
+      expect(nextState.data).toEqual(expectedBooking);
     });
 
     it("should reset booking", () => {
-      expect(bookingReducer(state, resetBooking())).toEqual({
+      const nextState = bookingReducer(state, resetBooking());
+      expect(nextState.data).toEqual({
         prestations: []
       });
     });
