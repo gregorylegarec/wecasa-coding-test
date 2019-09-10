@@ -3,8 +3,11 @@ import { AnyAction, Dispatch } from "redux";
 import { connect } from "react-redux";
 
 import Prestations from "./components/Prestations";
+import Address from "./components/Address";
+import Appointment from "./components/Appointment";
+import Confirmation from "./components/Confirmation";
 
-import { updateBooking } from "./redux/ducks/booking";
+import { updateBooking, resetBooking } from "./redux/ducks/booking";
 
 const STEP_PRESTATIONS = "STEP_PRESTATIONS";
 const STEP_ADDRESS = "STEP_ADDRESS";
@@ -19,7 +22,8 @@ const STEPS = [
 ];
 
 interface Props {
-  onPrestationsSubmitted: (prestations: Array<string>) => void;
+  onBookingUpdate: (attributes: Object) => void;
+  onBookingReset: () => void;
 }
 
 interface State {
@@ -34,17 +38,39 @@ export class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.handleSubmitPrestations = this.handleSubmitPrestations.bind(this);
+    this.handleSubmitAddress = this.handleSubmitAddress.bind(this);
+    this.handleSubmitAppointment = this.handleSubmitAppointment.bind(this);
+    this.handleConfirmation = this.handleConfirmation.bind(this);
   }
 
   handleSubmitPrestations(prestations: Array<string>) {
-    const { onPrestationsSubmitted } = this.props;
-    onPrestationsSubmitted(prestations);
+    const { onBookingUpdate } = this.props;
+    onBookingUpdate({ prestations });
+    this.nextStep();
+  }
+
+  handleSubmitAddress(address: string) {
+    const { onBookingUpdate } = this.props;
+    onBookingUpdate({ address });
+    this.nextStep();
+  }
+
+  handleSubmitAppointment(appointment: Date) {
+    const { onBookingUpdate } = this.props;
+    onBookingUpdate({ appointment });
+    this.nextStep();
+  }
+
+  handleConfirmation() {
+    const { onBookingReset } = this.props;
+    onBookingReset();
     this.nextStep();
   }
 
   nextStep() {
     const { stepIndex } = this.state;
-    const nextIndex = stepIndex < STEPS.length - 1 ? stepIndex + 1 : 0;
+    const shouldReset = stepIndex >= STEPS.length - 1;
+    const nextIndex = shouldReset ? 0 : stepIndex + 1;
     this.setState({ stepIndex: nextIndex });
   }
 
@@ -53,6 +79,12 @@ export class App extends React.Component<Props, State> {
     switch (STEPS[stepIndex]) {
       case STEP_PRESTATIONS:
         return <Prestations onSubmit={this.handleSubmitPrestations} />;
+      case STEP_ADDRESS:
+        return <Address onSubmit={this.handleSubmitAddress} />;
+      case STEP_APPOINTMENT:
+        return <Appointment onSubmit={this.handleSubmitAppointment} />;
+      case STEP_CONFIRMATION:
+        return <Confirmation onDone={this.handleConfirmation} />;
       default:
         return <p>Étape incohérente</p>;
     }
@@ -71,8 +103,9 @@ export class App extends React.Component<Props, State> {
 }
 
 const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => ({
-  onPrestationsSubmitted: (prestations: Array<string>) =>
-    dispatch<any>(updateBooking({ prestations }))
+  onBookingUpdate: (attributes: Object) =>
+    dispatch<any>(updateBooking(attributes)),
+  onBookingReset: () => dispatch<any>(resetBooking())
 });
 
 export default connect(

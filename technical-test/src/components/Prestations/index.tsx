@@ -10,6 +10,7 @@ import { withWecasaClient } from "../../lib/wecasa/hoc/withWecasaClient";
 import { Universe } from "../../lib/wecasa/types";
 import { AppState } from "../../redux/reducer";
 import { fetchHaircutUniverse } from "../../redux/ducks/haircut";
+import { resetPrestations } from "../../redux/ducks/prestations";
 import {
   isFetchingHaircutUniverse,
   getHaircutUniverse,
@@ -84,7 +85,10 @@ const mapDispatchToProps = (
   dispatch: Dispatch<AnyAction>,
   ownProps: Props
 ) => ({
-  onMount: () => dispatch<any>(fetchHaircutUniverse(ownProps.client))
+  onMount: () => {
+    dispatch<any>(resetPrestations());
+    dispatch<any>(fetchHaircutUniverse(ownProps.client));
+  }
 });
 
 export default withWecasaClient(

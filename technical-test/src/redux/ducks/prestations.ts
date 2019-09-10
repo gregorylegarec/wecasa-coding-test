@@ -11,6 +11,7 @@ export type PrestationsState = Array<string>;
 // Action types
 export const ADD_PRESTATION = "ADD_PRESTATION";
 export const REMOVE_PRESTATION = "REMOVE_PRESTATION";
+export const RESET_PRESTATIONS = "RESET_PRESTATIONS";
 
 interface AddPrestationAction {
   type: typeof ADD_PRESTATION;
@@ -22,7 +23,14 @@ interface RemovePrestationAction {
   payload: string;
 }
 
-type PrestationsActionTypes = AddPrestationAction | RemovePrestationAction;
+interface ResetPrestationsAction {
+  type: typeof RESET_PRESTATIONS;
+}
+
+type PrestationsActionTypes =
+  | AddPrestationAction
+  | RemovePrestationAction
+  | ResetPrestationsAction;
 
 // Actions
 export const addPrestation = (
@@ -39,6 +47,10 @@ export const removePrestation = (
   payload: reference
 });
 
+export const resetPrestations = (): ResetPrestationsAction => ({
+  type: RESET_PRESTATIONS
+});
+
 // Reducer
 export const prestationsReducer = (
   state: PrestationsState = [],
@@ -49,6 +61,8 @@ export const prestationsReducer = (
       return [...state, action.payload];
     case REMOVE_PRESTATION:
       return removeFirstValue(state, action.payload);
+    case RESET_PRESTATIONS:
+      return [];
     default:
       return state;
   }

@@ -14,7 +14,7 @@ export const RESET_BOOKING = "RESET_BOOKING";
 
 interface UpdateBookingAction {
   type: typeof UPDATE_BOOKING;
-  payload: Booking;
+  payload: Object;
 }
 
 interface ResetBookingAction {
@@ -24,9 +24,9 @@ interface ResetBookingAction {
 type BookingActionTypes = UpdateBookingAction | ResetBookingAction;
 
 // Actions
-export const updateBooking = (booking: Booking): UpdateBookingAction => ({
+export const updateBooking = (attributes: Object): UpdateBookingAction => ({
   type: UPDATE_BOOKING,
-  payload: booking
+  payload: attributes
 });
 
 export const resetBooking = (): ResetBookingAction => ({
