@@ -9,7 +9,8 @@ export const isFetchingHaircutUniverse = (state: AppState): boolean =>
   state.haircut.fetching;
 
 // Prestations
-
+export const getPrestations = (state: AppState): Array<string> =>
+  state.prestations;
 /**
  * Return the number of prestation of given reference already picked up.
  */

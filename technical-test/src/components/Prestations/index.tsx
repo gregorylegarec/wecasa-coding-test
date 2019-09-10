@@ -13,27 +13,42 @@ import { fetchHaircutUniverse } from "../../redux/ducks/haircut";
 import {
   isFetchingHaircutUniverse,
   getHaircutUniverse,
+  getPrestations,
   getPrestationsTotalPrice
 } from "../../redux/selectors";
 
 interface Props {
   client: WecasaClient;
   onMount: Function;
+  onSubmit: Function;
   isFetchingHaircutUniverse: boolean;
   haircutUniverse: Universe;
+  prestations: Array<string>;
   totalPrice: number;
 }
 
 class Prestations extends React.Component<Props> {
+  constructor(props: Props) {
+    super(props);
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
   componentDidMount() {
     this.props.onMount();
+  }
+
+  handleSubmit() {
+    const { onSubmit, prestations } = this.props;
+    onSubmit(prestations);
   }
 
   render() {
     const {
       isFetchingHaircutUniverse,
       haircutUniverse,
-      totalPrice
+      totalPrice,
+      prestations
     }: Props = this.props;
     const hasCategories =
       haircutUniverse.categories && haircutUniverse.categories.length;
@@ -47,6 +62,9 @@ class Prestations extends React.Component<Props> {
             <Category key={category.reference} category={category} />
           ))}
           <p>Total: {formatPrice(totalPrice)}</p>
+          <button disabled={!prestations.length} onClick={this.handleSubmit}>
+            Suivant
+          </button>
         </>
       );
     } else {
@@ -58,6 +76,7 @@ class Prestations extends React.Component<Props> {
 const mapStateToProps = (state: AppState) => ({
   isFetchingHaircutUniverse: isFetchingHaircutUniverse(state),
   haircutUniverse: getHaircutUniverse(state),
+  prestations: getPrestations(state),
   totalPrice: getPrestationsTotalPrice(state)
 });
 
